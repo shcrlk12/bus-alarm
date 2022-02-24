@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset = "UTF-8">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $("button[name='test1']").click(function () {
+                $.ajax({
+                    url:"/bus/subscribe",
+                    type:"POST",
+                    data:$("#frm1, #frm2").serialize(),
+                    success : function (){
+                        alert("성공");
+                        location.href = "/";
+                    }
+                })
+            });
+        });
+    </script>
+
+    <title>버스 구독</title>
+</head>
+<body>
+<h1>버스 구독</h1>
+<form id="frm1" method="get">
+    <label>
+        <input type="text" name="busName" placeholder="버스 이름 입력" th:value="${busName}" required />
+    </label>
+    <button type ="submit" >정류장 조회</button>
+</form>
+<form id="frm2" method="get">
+    <select  name = "busStop" id = "test">
+        <div th:each="l, i : ${busStopList}">
+            <option th:text="${l}" th:value="${l} + ',' + ${arsIdList.get(i.index)}" ></option>
+        </div>
+    </select>
+    <div>
+        <input type = "time" name="time" maxlength="5" placeholder="시간 입력 (hh:mm)" required>
+    </div>
+</form>
+<button name="test1">제출</button>
+
+<div th:each="reg : ${regList}">
+    <div th:text="${reg.busStationName} + ${reg.time} + ${reg.isActive}"></div>
+    <a th:href = "@{/bus/deleteSubscribe(id=${reg.id})}">삭제</a>
+</div>
+</body>
+</html>
