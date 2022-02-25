@@ -6,8 +6,10 @@ import kjwon.mytoy.busalarm.model.BusInput;
 import kjwon.mytoy.busalarm.model.BusLineOutput;
 import kjwon.mytoy.busalarm.repository.BusLineRepository;
 import kjwon.mytoy.busalarm.service.BusService;
+import kjwon.mytoy.busalarm.service.MemberService;
 import kjwon.mytoy.busalarm.util.SeoulBusAPICall;
 import lombok.RequiredArgsConstructor;
+import org.apache.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,18 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RequiredArgsConstructor
 @RestController
 public class BusRestController {
 
+    private  static final org.apache.log4j.Logger log = Logger.getLogger(BusRestController.class);
+
     private final BusService busService;
+    private final MemberService memberService;
 
     @ExceptionHandler(Exception.class)
     public Object nullex(Exception e) {
@@ -83,5 +88,12 @@ public class BusRestController {
     @GetMapping("/api/v1/busLine")
     public BusLineOutput v1_busLine(String busName) throws IOException {
         return busService.searchBusRoute(busName);
+    }
+
+    @PostMapping("/api/v1/chargePoint")
+    public void v1_chargePoint(Long chargePoint, Principal principal) throws IOException {
+        log.info("userName : " + principal.getName() + "charge Point : " + chargePoint);
+
+        memberService.chargePoint(chargePoint, principal.getName());
     }
 }

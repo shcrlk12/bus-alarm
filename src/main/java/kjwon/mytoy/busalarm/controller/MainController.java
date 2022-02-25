@@ -41,6 +41,9 @@ public class MainController {
         return "index";
     }
 
+    /**
+     * member controller
+     * */
     @GetMapping("/member/login")
     public String login(){
 
@@ -65,11 +68,30 @@ public class MainController {
     }
 
     @GetMapping("/member/userInfo")
-    public String userInfo(){
+    public String userInfo(Model model, Principal principal){
+
+        Long myPoint;
+
+        myPoint = memberService.inquiryPoint(principal.getName());
+        model.addAttribute("myPoint", myPoint);
 
         return "member/userInfo";
     }
 
+    @GetMapping("/member/point-charge")
+    public String pointCharge(Model model, Principal principal){
+
+        Long myPoint;
+
+        myPoint = memberService.inquiryPoint(principal.getName());
+        model.addAttribute("myPoint", myPoint);
+
+        return "member/point-charge";
+    }
+
+    /**
+     * bus controller
+     * */
 
     @GetMapping("/bus/subscribe")
     public String subscribeBusPage(String busName, Model model, Principal principal) throws IOException {
@@ -80,11 +102,18 @@ public class MainController {
 
             model.addAttribute("busStopList", busLineOutput.getBusLine());
             model.addAttribute("arsIdList", busLineOutput.getBusStationArsId());
-            model.addAttribute("stationId", busLineOutput.getBusLine());
+            model.addAttribute("Lng", busLineOutput.getGpsX());
+            model.addAttribute("Lat", busLineOutput.getGpsY());
+            System.out.println(busLineOutput.getGpsX() +" Tmx");
+
         }
         List<RegisteredBusAlarmDto> registeredBusAlarmDtoList = busService.getRegisterAlarm(principal);
 
         model.addAttribute("regList",registeredBusAlarmDtoList);
+
+        Long myPoint = memberService.inquiryPoint(principal.getName());
+
+        model.addAttribute("myPoint",myPoint);
 
         return "/bus/subscribe";
     }
@@ -107,4 +136,6 @@ public class MainController {
         busService.deleteSubscribe(id);
         return "redirect:/";
     }
+
+
 }

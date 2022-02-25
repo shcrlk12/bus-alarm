@@ -16,4 +16,5 @@ public interface BusService {
     List<RegisteredBusAlarmDto> getRegisterAlarm(Principal principal);
 
     boolean deleteSubscribe(Long id);
+
 }

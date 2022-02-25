@@ -265,5 +265,13 @@ public class SeoulBusAPICall {
         Elements e = element.select("rtNm");
         return Objects.requireNonNull(e.first()).html();
     }
+    public static String getGpsX(Element element){
+        Elements e = element.select("gpsX");
+        return Objects.requireNonNull(e.first()).html();
+    }
+    public static String getGpsY(Element element){
+        Elements e = element.select("gpsY");
+        return Objects.requireNonNull(e.first()).html();
+    }
 
 }

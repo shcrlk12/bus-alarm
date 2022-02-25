@@ -7,8 +7,10 @@ package kjwon.mytoy.busalarm.service;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import kjwon.mytoy.busalarm.entity.Member;
+import kjwon.mytoy.busalarm.exception.RepositoryException;
 import kjwon.mytoy.busalarm.model.MemberInput;
 import kjwon.mytoy.busalarm.repository.MemberRepository;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +31,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Autowired
     MemberRepository memberRepository;
+    private  static final Logger log = Logger.getLogger(MemberServiceImpl.class);
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -82,6 +85,35 @@ public class MemberServiceImpl implements MemberService{
                 .build();
         memberRepository.save(member);
 
+        return true;
+    }
+
+    @Override
+    public Long inquiryPoint(String userName) {
+        Optional<Member> optionalMember = memberRepository.findById(userName);
+
+        Member member = optionalMember.orElseThrow(() ->
+                new RepositoryException(1, "아이디가 없습니다.")
+        );
+
+        log.debug("my Point : " + member.getMyPoint());
+
+        return member.getMyPoint();
+    }
+
+    @Override
+    public boolean chargePoint(Long chargePoint, String userName) {
+
+        Optional<Member> optionalMember = memberRepository.findById(userName);
+
+        Member member = optionalMember.orElseThrow(()-> new RepositoryException(1, "아이디가 없습니다."));
+
+        if(member.getMyPoint() == null)
+            member.setMyPoint(Long.parseLong("0"));
+
+        member.setMyPoint(member.getMyPoint() + chargePoint);
+
+        memberRepository.save(member);
         return true;
     }
 }

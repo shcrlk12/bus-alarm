@@ -14,4 +14,8 @@ public interface MemberService extends UserDetailsService {
 
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+
+    Long inquiryPoint(String userName);
+
+    boolean chargePoint(Long chargePoint, String userName);
 }

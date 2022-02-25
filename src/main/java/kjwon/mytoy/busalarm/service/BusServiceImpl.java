@@ -52,16 +52,23 @@ public class BusServiceImpl implements BusService{
 
         List<String> arrList = new ArrayList<>();
         List<String> arrList2 = new ArrayList<>();
+        List<String> arrList3 = new ArrayList<>();
+        List<String> arrList4 = new ArrayList<>();
+
+        BusLineOutput busLineOutput = new BusLineOutput();
 
         for(Element e : elements){
             arrList.add(SeoulBusAPICall.getSationName(e));
             arrList2.add(SeoulBusAPICall.getArsId(e));
+            arrList3.add(SeoulBusAPICall.getGpsX(e));
+            arrList4.add(SeoulBusAPICall.getGpsY(e));
         }
 
         //3. 경유정류장 return
-        BusLineOutput busLineOutput = new BusLineOutput();
         busLineOutput.setBusLine(arrList);
         busLineOutput.setBusStationArsId(arrList2);
+        busLineOutput.setGpsX(arrList3);
+        busLineOutput.setGpsY(arrList4);
 
         return busLineOutput;
     }

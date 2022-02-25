@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+
     <title>유저 정보</title>
 </head>
 <body>
+
 <h1>유저 정보</h1>
+<div th:replace="/fragments/layout.html :: fragment-body-menu"></div>
+<span>내 포인트 : </span>
+<span th:text="${myPoint}"></span>
+<sapn> Point</sapn>
+
 
 
 </body>

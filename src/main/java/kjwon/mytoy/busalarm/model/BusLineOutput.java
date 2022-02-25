@@ -10,5 +10,7 @@ import java.util.List;
 public class BusLineOutput {
     List<String> busLine;
     List<String> busStationArsId;
+    List<String> gpsX;
+    List<String> gpsY;
 
 }

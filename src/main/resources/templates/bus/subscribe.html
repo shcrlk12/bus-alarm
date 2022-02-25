@@ -3,26 +3,31 @@
 <head>
     <meta charset = "UTF-8">
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function () {
-            $("button[name='test1']").click(function () {
-                $.ajax({
-                    url:"/bus/subscribe",
-                    type:"POST",
-                    data:$("#frm1, #frm2").serialize(),
-                    success : function (){
-                        alert("성공");
-                        location.href = "/";
-                    }
-                })
-            });
-        });
-    </script>
 
-    <title>버스 구독</title>
+    <style>
+        #map{
+            width:100%;
+            height: 800px;
+            margin-top:40px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-bottom: none;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+        }
+    </style>
+    <title>버스 알람</title>
 </head>
 <body>
-<h1>버스 구독</h1>
+<h1>버스 알람</h1>
+<div th:replace="/fragments/layout.html :: fragment-body-menu"></div>
+
+<div>
+    <span>내 포인트 : </span>
+    <span th:text="${myPoint}"></span>
+    <span> Point</span>
+</div>
+<p>문자 1건당 20p 차감</p>
+
 <form id="frm1" method="get">
     <label>
         <input type="text" name="busName" placeholder="버스 이름 입력" th:value="${busName}" required />
@@ -40,10 +45,90 @@
     </div>
 </form>
 <button name="test1">제출</button>
-
-<div th:each="reg : ${regList}">
-    <div th:text="${reg.busStationName} + ${reg.time} + ${reg.isActive}"></div>
-    <a th:href = "@{/bus/deleteSubscribe(id=${reg.id})}">삭제</a>
+<div>
+    <b>구독 정보</b>
+    <div th:each="reg : ${regList}">
+        <span th:text="${reg.busStationName} + ${reg.time} + ${reg.isActive}"></span>
+        <a th:href = "@{/bus/deleteSubscribe(id=${reg.id})}">삭제</a>
+    </div>
 </div>
+<div id="map"></div>
+
+<script th:inline="javascript">
+    function initMap() {
+        /*<![CDATA[*/
+        let lngList = /*[[ ${Lng} ]]*/;
+        let latList = /*[[ ${Lat} ]]*/;
+        let busStopList = /*[[ ${busStopList} ]]*/;
+        /*]]*/
+
+        if(lngList !== null && latList !== null && busStopList !== null) {
+            let sumLng = lngList.reduce((acc, arr) => {
+                acc += parseFloat(arr);
+                return acc;
+            }, 0)
+
+            let sumLat = latList.reduce((acc, arr) => {
+                acc += parseFloat(arr);
+                return acc;
+            }, 0)
+
+            let center = {
+                lng: sumLng / lngList.length,
+                lat: sumLat / latList.length
+            }
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center,
+                scrollwheel: false,
+                zoom       : 15
+            });
+
+            for (let i = 0; i < lngList.length; i++) {
+                let lng = parseFloat(lngList[i]);
+                let lat = parseFloat(latList[i]);
+
+                let myLatLng = {
+                    lng, lat
+                }
+
+                new google.maps.Marker({
+                    position: myLatLng,
+                    map     : map,
+                    title   : busStopList[i],
+                    Opacity : 0.8,
+
+                    icon: {
+                        path       : google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                        fillColor  : '#000',
+                        fillOpacity: 1,
+                        scale      : 4,
+                    }
+
+                });
+            }
+        }
+
+
+
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("button[name='test1']").click(function () {
+            $.ajax({
+                url:"/bus/subscribe",
+                type:"POST",
+                data:$("#frm1, #frm2").serialize(),
+                success : function (){
+                    alert("성공");
+                    location.href = "/";
+                }
+            })
+        });
+    });
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-IcAhPaJo9RL1LC3HyUKvz_bqJvtIwWc
+    &callback=initMap" async defer></script>
+
 </body>
 </html>

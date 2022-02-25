@@ -23,4 +23,6 @@ public class Member{
     private String password;
     private LocalDateTime regDt;
 
+    private Long myPoint;
+
 }
