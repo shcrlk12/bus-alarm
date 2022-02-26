@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset = "UTF-8">
+    <title>사용 후기</title>
+</head>
+<body>
+<h1>사용 후기</h1>
+
+<div th:replace="/fragments/layout.html :: fragment-body-menu"></div>
+
+<a href="/member/create-review">사용 후기 작성</a>
+<div th:each="review : ${reviewList}" style="border: solid 1px black">
+    <div>
+        <div style="float:left">
+            <span>작성 자 : </span>
+            <b th:text="${review.userId}"></b>
+        </div>
+        <div style="float:right">
+            <span>작성 일 : </span>
+            <time th:text="${review.regDt}"></time>
+        </div>
+    </div>
+    <div style="clear:both; content:''"></div>
+    <div>
+        <span>정류장 : </span>
+        <b th:text="${review.station}"></b>
+        <span>, 만족도 : </span>
+        <b th:text="${review.accuracy}"></b>
+        <span>점</span>
+    </div>
+    <p th:text="${review.reviewContent}"></p>
+</div>
+</body>
+</html>

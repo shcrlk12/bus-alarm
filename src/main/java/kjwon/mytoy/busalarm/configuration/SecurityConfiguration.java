@@ -49,6 +49,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/"
                         , "/member/register"
                         , "/api/v1/busLine"
+                        , "/api/v1/phoneAthu"
+                        , "/api/v1/checkPhoneAhtu"
                 )
                 .permitAll();
 

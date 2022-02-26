@@ -31,9 +31,6 @@ public class AlarmServiceSchedulerImpl implements AlarmServiceScheduler{
 
             boolean isSmsMsg;
 
-            log.debug(subscribeBusAlarm.getUserId() + "alarm Time : " + subscribeBusAlarm.getAlarmTime()
-                    + ", current Time" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute());
-
             if (Math.abs(alarmTime - currentTime) <= 5) {
                 log.info("send sms message to " + subscribeBusAlarm.getUserId());
                 isSmsMsg = true;

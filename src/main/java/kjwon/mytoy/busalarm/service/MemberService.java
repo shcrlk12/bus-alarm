@@ -18,4 +18,5 @@ public interface MemberService extends UserDetailsService {
     Long inquiryPoint(String userName);
 
     boolean chargePoint(Long chargePoint, String userName);
+
 }

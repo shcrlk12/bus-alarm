@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset = "UTF-8">
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+    <title>리뷰 작성</title>
+</head>
+<body>
+<h1>리뷰 작성</h1>
+
+<div th:replace="/fragments/layout.html :: fragment-body-menu"></div>
+
+<table>
+    <tr>
+        <th>정류장 선택</th>
+        <td>
+            <form method="get" id="searchStation">
+                <input type = "text" name="station" th:value="${stationName}" required/>
+            </form>
+        </td>
+        <td><button type="submit" form="searchStation">정류장 조회</button></td>
+    </tr>
+    <tr>
+        <th></th>
+        <td th:if="${isSation == true}">
+            정류장이 존재합니다.
+        </td>
+        <td th:if="${isSation == false}">
+            정류장이 존재하지 않습니다.
+        </td>
+    </tr>
+    <tr>
+        <th>만족도</th>
+        <td>
+            <form method="get" id="frmAccuracy">
+                <input type = "radio" name="accuracy" value="1" required>1
+                <input type = "radio" name="accuracy" value="2" required>2
+                <input type = "radio" name="accuracy" value="3" required>3
+                <input type = "radio" name="accuracy" value="4" required>4
+                <input type = "radio" name="accuracy" value="5" required>5
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <th>리뷰</th>
+        <td>
+            <form method="get" id="frmText">
+                <textarea name = "reviewContent" id = "" cols = "30" rows = "10" required></textarea>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <th></th>
+        <td>
+           <button id="reigsterReview">리뷰 등록</button>
+        </td>
+    </tr>
+</table>
+
+<script>
+    $("document").ready(()=>{
+        $("#reigsterReview").click(()=>{
+            let station = $('input[name=station]').html();
+            console.log(station);
+            $.ajax({
+                url:"/api/v1/registReview",
+                type:"POST",
+                data: $('#searchStation,#frmAccuracy,#frmText').serialize(),
+                success : function (){
+                    location.href='/member/review';
+                }
+            })
+        })
+    })
+</script>
+
+</body>
+</html>

@@ -273,5 +273,8 @@ public class SeoulBusAPICall {
         Elements e = element.select("gpsY");
         return Objects.requireNonNull(e.first()).html();
     }
-
+    public static String getHeaderMsg(Document element){
+        Elements e = element.select("headerMsg");
+        return Objects.requireNonNull(e.first()).html();
+    }
 }

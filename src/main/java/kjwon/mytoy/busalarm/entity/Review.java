@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
@@ -14,17 +16,18 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 @Entity
-public class Member{
+public class Review{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String userId;
-    private String userName;
-    private String phone;
-    private String password;
+    private String content;
+    private String station;
+    private String accuracy;
+
+    private boolean isDelete;
+
     private LocalDateTime regDt;
-
-    private Long myPoint;
-
-
 
 }

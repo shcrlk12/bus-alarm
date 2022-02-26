@@ -2,11 +2,13 @@ package kjwon.mytoy.busalarm.controller;
 
 import kjwon.mytoy.busalarm.dto.BusInfoDto;
 import kjwon.mytoy.busalarm.dto.RegisteredBusAlarmDto;
+import kjwon.mytoy.busalarm.dto.ReviewDto;
 import kjwon.mytoy.busalarm.model.BusLineOutput;
 import kjwon.mytoy.busalarm.model.MemberInput;
 import kjwon.mytoy.busalarm.service.BusService;
 import kjwon.mytoy.busalarm.service.BusServiceImpl;
 import kjwon.mytoy.busalarm.service.MemberService;
+import kjwon.mytoy.busalarm.service.ReviewService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
@@ -30,6 +32,7 @@ public class MainController {
 
     private final MemberService memberService;
     private final BusService busService;
+    private final ReviewService reviewService;
 
     private  static final Logger log = Logger.getLogger(MainController.class);
 
@@ -51,20 +54,24 @@ public class MainController {
     }
 
     @GetMapping("/member/register")
-    public String register(){
+    public String register(Model model){
+
+        model.addAttribute("register", 1);
 
         return "member/register";
     }
 
     @PostMapping("/member/register")
-    public String registerSubmit(MemberInput parameter){
-        System.out.println("test");
+    public String registerSubmit(Model model, MemberInput parameter){
+        boolean result;
 
-        System.out.println(parameter.getUserName());
+        result = memberService.register(parameter);
+        model.addAttribute("register", result);
 
-        boolean result = memberService.register(parameter);
+        if(result)
+            return "index";
 
-        return "index";
+        return "/member/register";
     }
 
     @GetMapping("/member/userInfo")
@@ -87,6 +94,29 @@ public class MainController {
         model.addAttribute("myPoint", myPoint);
 
         return "member/point-charge";
+    }
+
+    @GetMapping("/member/review")
+    public String review(Model model, Principal principal){
+
+        List<ReviewDto> ReviewList = reviewService.getReview();
+
+        model.addAttribute("reviewList", ReviewList);
+        return "member/review";
+    }
+
+    @GetMapping("/member/create-review")
+    public String createReview(Model model, String station) throws IOException {
+
+        if(station == null)
+            return "member/create-review";
+
+        boolean isSation = busService.isStation(station);
+
+        model.addAttribute("isSation", isSation);
+        model.addAttribute("stationName", station);
+
+        return "member/create-review";
     }
 
     /**
@@ -137,5 +167,10 @@ public class MainController {
         return "redirect:/";
     }
 
+    @GetMapping("/bus/transferInfo")
+    public String transferInfo(Long id) throws IOException {
+
+        return "/bus/transferInfo";
+    }
 
 }

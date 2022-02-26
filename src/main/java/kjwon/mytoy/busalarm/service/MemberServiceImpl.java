@@ -7,9 +7,16 @@ package kjwon.mytoy.busalarm.service;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import kjwon.mytoy.busalarm.entity.Member;
+import kjwon.mytoy.busalarm.entity.PhoneAthu;
 import kjwon.mytoy.busalarm.exception.RepositoryException;
 import kjwon.mytoy.busalarm.model.MemberInput;
 import kjwon.mytoy.busalarm.repository.MemberRepository;
+import kjwon.mytoy.busalarm.repository.PhoneAthuRepository;
+import lombok.RequiredArgsConstructor;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,11 +33,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class MemberServiceImpl implements MemberService{
 
-    @Autowired
-    MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final PhoneAthuRepository phoneAthuRepository;
+
     private  static final Logger log = Logger.getLogger(MemberServiceImpl.class);
 
     @Override
@@ -67,6 +76,18 @@ public class MemberServiceImpl implements MemberService{
 
     public boolean register(MemberInput parameter) {
 
+        Optional<PhoneAthu> phoneAthuOptional = phoneAthuRepository.findByPhone(parameter.getPhone());
+
+        if(phoneAthuOptional.isEmpty()){
+            return false;
+        }
+
+        PhoneAthu phoneAthu = phoneAthuOptional.get();
+
+        if(!phoneAthu.isAcitve()){
+            return false;
+        }
+
         Optional<Member> optionalMember = memberRepository.findById(parameter.getUserId());
         if (optionalMember.isPresent()) {
             //현재 userId에 해당하는 데이터 존재
@@ -82,9 +103,11 @@ public class MemberServiceImpl implements MemberService{
                 .phone(parameter.getPhone())
                 .password(encPassword)
                 .regDt(LocalDateTime.now())
+                .myPoint(Long.parseLong("0"))
                 .build();
         memberRepository.save(member);
 
+        phoneAthuRepository.delete(phoneAthu);
         return true;
     }
 
@@ -116,4 +139,5 @@ public class MemberServiceImpl implements MemberService{
         memberRepository.save(member);
         return true;
     }
+
 }

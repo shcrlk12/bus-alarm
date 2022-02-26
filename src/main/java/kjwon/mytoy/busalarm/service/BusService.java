@@ -17,4 +17,6 @@ public interface BusService {
 
     boolean deleteSubscribe(Long id);
 
+    boolean isStation(String StationName) throws IOException;
+
 }

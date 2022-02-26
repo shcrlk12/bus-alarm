@@ -138,4 +138,16 @@ public class BusServiceImpl implements BusService{
         subscribeBusAlarmRepository.save(subscribeBusAlarm);
         return true;
     }
+
+    @Override
+    public boolean isStation(String StationName) throws IOException {
+
+        SeoulBusAPICall seoulBusAPICall = new SeoulBusAPICall();
+
+        Document doc = seoulBusAPICall.getStationByNameList(StationName);
+
+        String headerMsg = SeoulBusAPICall.getHeaderMsg(doc);
+
+        return !headerMsg.equals("결과가 없습니다.");
+    }
 }

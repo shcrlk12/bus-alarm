@@ -2,6 +2,7 @@
 <html lang = "en">
 <head>
     <meta charset = "UTF-8">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 
 
     <title>Title</title>
@@ -12,10 +13,25 @@
 
 <div>
     <a href = "/bus/subscribe">버스 알람</a>
+    |
+    <a href = "/bus/transferInfo">버스 환승 정보</a>
+    |
     <a href="/member/point-charge">포인트 충전</a>
+    |
+    <a href="/member/review">사용 후기</a>
 </div>
 
+<script th:inline="javascript">
+    $('document').ready(()=>{
+        /*<![CDATA[*/
+        let register = /*[[ ${register} ]]*/;
+        /*]]*/
 
+        if(register){
+            alert('회원가입 완료');
+        }
+    })
+</script>
 
 </body>
 </html>

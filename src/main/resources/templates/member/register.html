@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
     <title>회원 가입</title>
 </head>
 <body>
@@ -21,8 +23,15 @@
 
     <div>
         <input type="tel" name="phone" placeholder="전화번호 입력" required />
+        <button id ="athuNumberReq" type="button">인증번호 요청</button>
     </div>
-
+    <div>
+        <input type="number" name="athuNumber" maxlength="6" placeholder="인증번호 입력" required />
+        <button id="checkAthuNumber" type="button">인증번호 확인</button>
+    </div>
+    <div id="athuMsg">
+        인증번호 확인을 하세요
+    </div>
     <div>
         <input type="password" name="password" placeholder="비밀번호 입력" required />
     </div>
@@ -35,8 +44,46 @@
     </div>
 
 </form>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        /*<![CDATA[*/
+        let register = /*[[ ${register} ]]*/;
+        /*]]*/
 
+        if(register === false){
+            alert("회원가입 실패!");
+        }
 
+        $("#athuNumberReq").click(function () {
+            // console.log();
 
+            $.ajax({
+                url:"/api/v1/phoneAthu",
+                type:"POST",
+                data:{ phone : $("input[name=phone]").val()},
+                success : function (){
+
+                }
+            })
+        });
+
+        $("#checkAthuNumber").click(function () {
+            $.ajax({
+                url:"/api/v1/checkPhoneAhtu",
+                type:"POST",
+                data:{
+                    phone : $("input[name=phone]").val(),
+                    ahtuNumber: $("input[name=athuNumber]").val(),
+                    },
+                success : function (res){
+                    if (res === true)
+                        $('#athuMsg').text("인증 완료");
+                    else
+                        $('#athuMsg').text("인증 실패");
+                }
+            })
+        });
+    });
+</script>
 </body>
 </html>
